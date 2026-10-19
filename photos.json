@@ -1,0 +1,316 @@
+{
+  "a_detail": {
+    "url": "images/a_detail.jpg",
+    "fileName": "Siwa_Arch_Detail_DSC02798.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/5.6",
+      "shutter": "1/125",
+      "iso": 2500,
+      "focal": "50 mm"
+    }
+  },
+  "a_exterior": {
+    "url": "images/a_exterior.jpg",
+    "fileName": "Siwa_Arch_Exterior_DSC02799.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/3.5",
+      "shutter": "1/125",
+      "iso": 2500,
+      "focal": "16 mm"
+    }
+  },
+  "a_interior": {
+    "url": "images/a_interior.jpg",
+    "fileName": "Siwa_Arch_Interior_DSC02840.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/3.5",
+      "shutter": "1/125",
+      "iso": 800,
+      "focal": "16 mm"
+    }
+  },
+  "c_candid": {
+    "url": "images/c_candid.jpg",
+    "fileName": "Siwa_Culture_Candid_DSC03040.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/5.6",
+      "shutter": "1/160",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "c_tradition": {
+    "url": "images/c_tradition.jpg",
+    "fileName": "Siwa_Culture_Tradition_DSC09130.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/320",
+      "iso": 800,
+      "focal": "50 mm"
+    }
+  },
+  "cr_concept": {
+    "url": "images/cr_concept.jpg",
+    "fileName": "Siwa_Creative_Concept_DSC08768.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/4",
+      "shutter": "1/200",
+      "iso": 125,
+      "focal": "24 mm"
+    }
+  },
+  "m_copy_screen": {
+    "url": "images/m_copy_screen.jpg",
+    "fileName": "Siwa_Motion_ScreenCopy_DSC09289.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/5.6",
+      "shutter": "1/100",
+      "iso": 200,
+      "focal": "50 mm"
+    }
+  },
+  "m_movement": {
+    "url": "images/m_movement.jpg",
+    "fileName": "Siwa_Motion_Movement_DSC02018.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/3.2",
+      "shutter": "1/15",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "m_panning": {
+    "url": "images/m_panning.jpg",
+    "fileName": "Siwa_Motion_Panning_DSC02022.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/3.2",
+      "shutter": "1/15",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "m_stop": {
+    "url": "images/m_stop.jpg",
+    "fileName": "Siwa_Motion_StopAction_DSC09489.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/640",
+      "iso": 4000,
+      "focal": "50 mm"
+    }
+  },
+  "m_water": {
+    "url": "images/m_water.jpg",
+    "fileName": "Siwa_Motion_WaterFlow_DSC09242.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/36",
+      "shutter": "1",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "n_animal_shallow": {
+    "url": "images/n_animal_shallow.jpg",
+    "fileName": "Siwa_Nature_SmallAnimal_Shallow_DSC09243.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/4",
+      "shutter": "1/250",
+      "iso": 1250,
+      "focal": "104 mm"
+    }
+  },
+  "n_flower_black": {
+    "url": "images/n_flower_black.jpg",
+    "fileName": "Siwa_Nature_Flower_BlackBG_DSC09098.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/1600",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "n_flower_shallow": {
+    "url": "images/n_flower_shallow.jpg",
+    "fileName": "Siwa_Nature_Flower_Shallow_DSC09093.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/1000",
+      "iso": 64,
+      "focal": "50 mm"
+    }
+  },
+  "p_child": {
+    "url": "images/p_child.jpg",
+    "fileName": "Siwa_Portrait_Child_DSC09063.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/250",
+      "iso": 64,
+      "focal": "50 mm"
+    }
+  },
+  "p_cu": {
+    "url": "images/p_cu.jpg",
+    "fileName": "Siwa_Portrait_CU_DSC06070.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/2.8",
+      "shutter": "1/125",
+      "iso": 160,
+      "focal": "50 mm"
+    }
+  },
+  "p_elder": {
+    "url": "images/p_elder.jpg",
+    "fileName": "Siwa_Portrait_Senior_DSC09082.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/500",
+      "iso": 640,
+      "focal": "50 mm"
+    }
+  },
+  "p_hk": {
+    "url": "images/p_hk.jpg",
+    "fileName": "Siwa_Portrait_HighKey_DSC08258.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/800",
+      "iso": 64,
+      "focal": "50 mm"
+    }
+  },
+  "p_lk": {
+    "url": "images/p_lk.jpg",
+    "fileName": "Siwa_Portrait_LowKey_DSC06068.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/2.8",
+      "shutter": "1/125",
+      "iso": 160,
+      "focal": "50 mm"
+    }
+  },
+  "p_ls": {
+    "url": "images/p_ls.jpg",
+    "fileName": "Siwa_Portrait_LS_DSC08268.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/1.8",
+      "shutter": "1/640",
+      "iso": 64,
+      "focal": "50 mm"
+    }
+  },
+  "p_ms": {
+    "url": "images/p_ms.jpg",
+    "fileName": "Siwa_Portrait_MS_DSC07041.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/4",
+      "shutter": "1/160",
+      "iso": 200,
+      "focal": "21 mm"
+    }
+  },
+  "pal_1": {
+    "url": "images/pal_1.jpg",
+    "fileName": "Siwa_Palette_Shot_01_DSC02487-Enhanced-NR.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/5.6",
+      "shutter": "1/60",
+      "iso": 1000,
+      "focal": "50 mm"
+    },
+    "colors": [
+      "#000000",
+      "#000020",
+      "#002020",
+      "#202020",
+      "#4080a0"
+    ]
+  },
+  "pal_2": {
+    "url": "images/pal_2.jpg",
+    "fileName": "Siwa_Palette_Shot_02_DSC02684.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/4.5",
+      "shutter": "1/125",
+      "iso": 125,
+      "focal": "23 mm"
+    },
+    "colors": [
+      "#e0e0e0",
+      "#e0c080",
+      "#a08060",
+      "#c0a060",
+      "#606040"
+    ]
+  },
+  "profile_avatar": {
+    "url": "images/profile_avatar.jpg"
+  },
+  "s_landscape": {
+    "url": "images/s_landscape.jpg",
+    "fileName": "Siwa_Scenery_Landscape_DSC02956.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/5.6",
+      "shutter": "1/125",
+      "iso": 125,
+      "focal": "16 mm"
+    }
+  },
+  "s_night": {
+    "url": "images/s_night.jpg",
+    "fileName": "Siwa_Scenery_Night_DSC09036.jpg",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/22",
+      "shutter": "10",
+      "iso": 50,
+      "focal": "22 mm"
+    }
+  },
+  "s_seascape": {
+    "url": "images/s_seascape.jpg",
+    "fileName": "Siwa_Scenery_Seascape_DSC00503.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/2.8",
+      "shutter": "1/640",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  },
+  "s_silhouette": {
+    "url": "images/s_silhouette.jpg",
+    "fileName": "Siwa_Scenery_Silhouette_DSC00466.JPG",
+    "exif": {
+      "camera": "ILCE-6700",
+      "aperture": "f/2.8",
+      "shutter": "1/4000",
+      "iso": 50,
+      "focal": "50 mm"
+    }
+  }
+}
