@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siwa Sanpechuda — Photography Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- ExifReader JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/exifreader@4.20.0/dist/exif-reader.min.js"></script>
+    <!-- Cropper.js Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            black: '#000000',
+                            card: '#121212',
+                            border: '#222222',
+                            hover: '#1c1c1e',
+                            textMuted: '#86868b',
+                            accent: '#f5f5f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Thai', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #f5f5f7;
+            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 22, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+        }
+
+        .cropper-bg {
+            background-image: none !important;
+            background-color: #0a0a0a !important;
+        }
+        .cropper-modal {
+            opacity: 0.8 !important;
+            background-color: #000000 !important;
+        }
+        .cropper-view-box {
+            outline: 2px solid #f59e0b !important;
+            outline-color: rgba(245, 158, 11, 0.9) !important;
+        }
+        .cropper-line, .cropper-point {
+            background-color: #f59e0b !important;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Sticky Apple Style Glass Nav Bar -->
+    <header class="sticky top-0 z-40 glass-nav w-full overflow-x-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
+                <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-shrink">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-neutral-700/80 shadow-md flex-shrink-0 bg-neutral-800">
+                        <img id="header-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Siwa Sanpechuda" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="truncate">
+                        <h1 class="text-xs sm:text-base font-bold tracking-wide text-white truncate">SIWA SANPECHUDA</h1>
+                        <p class="text-[9px] sm:text-[11px] text-apple-textMuted tracking-wider uppercase font-medium truncate">ศิวา สรรเพชุดา — Portfolio</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Category Tabs (Desktop) -->
+                <nav class="hidden lg:flex space-x-1 text-sm font-medium bg-neutral-900/80 p-1.5 rounded-full border border-neutral-800">
+                    <button onclick="filterCategory('all')" class="nav-btn active px-4 py-1.5 rounded-full text-white bg-neutral-800 transition-all">ทั้งหมด</button>
+                    <button onclick="filterCategory('portrait')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Portrait</button>
+                    <button onclick="filterCategory('nature')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Nature</button>
+                    <button onclick="filterCategory('motion')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Motion</button>
+                    <button onclick="filterCategory('scenery')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Scenery</button>
+                    <button onclick="filterCategory('arch')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Architecture</button>
+                    <button onclick="filterCategory('culture')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Candid</button>
+                    <button onclick="filterCategory('creative')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Creative</button>
+                    <button onclick="filterCategory('palette')" class="nav-btn px-4 py-1.5 rounded-full text-apple-textMuted hover:text-white transition-all">Palette</button>
+                </nav>
+
+                <!-- RAW Drive Button & Quick Upload -->
+                <div class="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
+                    <a href="https://drive.google.com/drive/folders/1JUMBwbK-O4RVowTHknl8jP_YcXVkAA4Y?usp=share_link" target="_blank" class="text-xs sm:text-sm bg-amber-500 hover:bg-amber-400 text-black font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all flex items-center space-x-1.5 sm:space-x-2 shadow-md shadow-amber-500/10">
+                        <i class="fa-brands fa-google-drive text-sm sm:text-base"></i>
+                        <span class="whitespace-nowrap">ไฟล์ RAW</span>
+                    </a>
+                    <div class="hidden xl:flex items-center text-xs text-apple-textMuted bg-neutral-900 px-3.5 py-2 rounded-full border border-neutral-800 font-mono">
+                        <span id="uploaded-count" class="text-white font-bold mr-1">0</span> / <span id="total-count">21</span> รูปถ่าย
+                    </div>
+                    <button onclick="triggerGlobalUpload()" class="text-xs sm:text-sm bg-white text-black hover:bg-neutral-200 font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all flex items-center space-x-1.5 shadow-sm">
+                        <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                        <span class="hidden sm:inline">อัปโหลดด่วน</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Scrollable Category Tabs -->
+        <div class="lg:hidden flex overflow-x-auto space-x-2 px-4 py-2 border-t border-neutral-900 text-xs sm:text-sm no-scrollbar w-full">
+            <button onclick="filterCategory('all')" class="mobile-nav-btn active whitespace-nowrap px-3.5 py-1.5 rounded-full bg-white text-black font-medium">ทั้งหมด</button>
+            <button onclick="filterCategory('portrait')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Portrait</button>
+            <button onclick="filterCategory('nature')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Nature</button>
+            <button onclick="filterCategory('motion')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Motion</button>
+            <button onclick="filterCategory('scenery')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Scenery</button>
+            <button onclick="filterCategory('arch')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Arch</button>
+            <button onclick="filterCategory('culture')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Candid</button>
+            <button onclick="filterCategory('creative')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Creative</button>
+            <button onclick="filterCategory('palette')" class="mobile-nav-btn whitespace-nowrap px-3.5 py-1.5 rounded-full bg-neutral-900 text-neutral-400">Palette</button>
+        </div>
+    </header>
+
+    <input type="file" id="master-file-input" class="hidden" accept="image/*" multiple onchange="handleMasterUpload(event)">
+
+    <!-- Hero Profile Section -->
+    <section class="relative pt-12 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 border-b border-neutral-800/80 pb-10">
+            <div class="relative group flex-shrink-0">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden border-2 border-neutral-700 shadow-2xl bg-neutral-900 transition-all duration-300 group-hover:border-neutral-500 relative">
+                    <img id="hero-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Siwa Sanpechuda" class="w-full h-full object-cover object-top">
+                    
+                    <label class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer p-2 text-center">
+                        <i class="fa-solid fa-camera text-xl mb-1"></i>
+                        <span class="text-xs font-medium leading-tight">เปลี่ยนรูปโปรไฟล์</span>
+                        <input type="file" accept="image/*" class="hidden" onchange="uploadProfilePicture(event)">
+                    </label>
+                </div>
+                <span class="absolute -bottom-1.5 -right-1.5 bg-emerald-500 text-black p-1 rounded-full text-xs border-2 border-black flex items-center justify-center w-7 h-7 shadow-lg" title="Photographer">
+                    <i class="fa-solid fa-camera"></i>
+                </span>
+            </div>
+
+            <div class="text-center sm:text-left flex-grow">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-2">
+                    <span class="text-xs sm:text-sm font-bold tracking-widest text-neutral-400 uppercase">Photographer & Visual Creator</span>
+                    <label class="cursor-pointer text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-3 py-1 rounded-full border border-neutral-700 transition font-medium">
+                        <i class="fa-solid fa-upload mr-1 text-amber-400"></i> อัปโหลดรูปหน้าคุณ
+                        <input type="file" accept="image/*" class="hidden" onchange="uploadProfilePicture(event)">
+                    </label>
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+                    ศิวา สรรเพชุดา <br class="hidden sm:inline"/>
+                    <span class="text-neutral-500 font-normal text-2xl sm:text-3xl">Siwa Sanpechuda Portfolio</span>
+                </h2>
+                <p class="mt-3 text-sm sm:text-base text-apple-textMuted max-w-2xl leading-relaxed">
+                    รวมผลงานภาพถ่ายแยกตามหมวดหมู่ พร้อมระบบ <strong class="text-white font-semibold">Crop ตัดขอบภาพ</strong>, อ่านค่า <strong class="text-white font-semibold">EXIF อัตโนมัติ</strong> (Camera, F-Stop, Shutter, ISO) และตั้งชื่อไฟล์รูปมาตรฐานตากล้องมืออาชีพ
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Portfolio Gallery Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full flex-grow">
+        <div id="gallery-container" class="space-y-16">
+            <!-- Dynamic Category Content Rendered via JS -->
+        </div>
+    </main>
+
+    <!-- Image Cropper Modal -->
+    <div id="cropper-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex flex-col items-center justify-between p-4 sm:p-6 transition-all">
+        <!-- Header -->
+        <div class="w-full max-w-4xl flex items-center justify-between pb-4 border-b border-neutral-800">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-crop-simple text-amber-400 text-lg"></i>
+                <h3 class="text-sm font-bold text-white">ปรับแต่งขนาดและ Crop รูปภาพ</h3>
+            </div>
+            <button onclick="closeCropperModal()" class="text-neutral-400 hover:text-white p-2 rounded-full">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Crop Canvas Area -->
+        <div class="w-full max-w-4xl flex-grow my-4 flex items-center justify-center bg-neutral-950 rounded-2xl border border-neutral-800 p-2 overflow-hidden max-h-[65vh]">
+            <img id="cropper-img" class="max-h-[60vh] max-w-full object-contain">
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="w-full max-w-4xl bg-neutral-900/90 border border-neutral-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs">
+                <span class="text-neutral-400 mr-1 text-[11px]">อัตราส่วน:</span>
+                <button onclick="setCropRatio(NaN)" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg border border-neutral-700">อิสระ</button>
+                <button onclick="setCropRatio(4/3)" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg border border-neutral-700">4:3</button>
+                <button onclick="setCropRatio(16/9)" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg border border-neutral-700">16:9</button>
+                <button onclick="setCropRatio(1)" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg border border-neutral-700">1:1</button>
+                <button onclick="setCropRatio(3/2)" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg border border-neutral-700">3:2</button>
+            </div>
+
+            <div class="flex items-center space-x-2 text-xs">
+                <button onclick="rotateCrop(-90)" class="p-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg border border-neutral-700" title="หมุนซ้าย 90°">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button onclick="rotateCrop(90)" class="p-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg border border-neutral-700" title="หมุนขวา 90°">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button onclick="zoomCrop(0.1)" class="p-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg border border-neutral-700" title="ซูมเข้า">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </button>
+                <button onclick="zoomCrop(-0.1)" class="p-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg border border-neutral-700" title="ซูมออก">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <button onclick="closeCropperModal()" class="flex-1 sm:flex-initial text-xs bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2.5 rounded-xl border border-neutral-700 transition">
+                    ยกเลิก
+                </button>
+                <button onclick="confirmCropAndSave()" class="flex-1 sm:flex-initial text-xs bg-amber-500 hover:bg-amber-400 text-black font-semibold px-5 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-check"></i>
+                    <span>ตัดภาพและบันทึก</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal Viewer -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-300">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white p-3 rounded-full bg-neutral-900/80 border border-neutral-800 transition z-50">
+            <i class="fa-solid fa-xmark text-xl w-6 h-6 flex items-center justify-center"></i>
+        </button>
+
+        <div class="max-w-5xl w-full flex flex-col md:flex-row items-center gap-8 bg-neutral-950/90 border border-neutral-800 p-6 rounded-3xl max-h-[90vh] overflow-y-auto">
+            <div class="w-full md:w-2/3 flex items-center justify-center bg-black rounded-2xl overflow-hidden min-h-[250px] max-h-[70vh]">
+                <img id="lightbox-img" src="" alt="Full view" class="max-h-[70vh] w-auto object-contain">
+            </div>
+            <div class="w-full md:w-1/3 flex flex-col justify-between text-left space-y-5">
+                <div>
+                    <span id="lightbox-category" class="text-[11px] tracking-wider uppercase text-neutral-500 font-semibold px-2.5 py-1 rounded-md bg-neutral-900 border border-neutral-800 inline-block mb-3">Category</span>
+                    
+                    <div class="mb-3">
+                        <span class="text-[10px] text-amber-400 font-mono tracking-wider block mb-1">AUTO-GENERATED FILE NAME</span>
+                        <h3 id="lightbox-filename" class="text-xs font-mono font-bold text-amber-300 bg-amber-950/40 p-2 rounded-lg border border-amber-900/40 break-all">FILENAME.JPG</h3>
+                    </div>
+
+                    <h3 id="lightbox-title" class="text-lg font-bold text-white mb-2">Image Title</h3>
+                    <p id="lightbox-desc" class="text-xs text-neutral-400 leading-relaxed mb-4">Description about this technique or subject.</p>
+
+                    <!-- EXIF Box -->
+                    <div class="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between text-xs border-b border-neutral-800 pb-2">
+                            <span class="font-semibold text-white flex items-center gap-1.5"><i class="fa-solid fa-sliders text-amber-400"></i> EXIF Metadata</span>
+                            <span id="lightbox-camera" class="text-[11px] text-neutral-400 font-mono">Camera Model</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono text-neutral-300">
+                            <div><span class="text-neutral-500 text-[10px]">Aperture:</span> <br/><strong id="lightbox-aperture" class="text-white">f/2.8</strong></div>
+                            <div><span class="text-neutral-500 text-[10px]">Shutter:</span> <br/><strong id="lightbox-shutter" class="text-white">1/250s</strong></div>
+                            <div><span class="text-neutral-500 text-[10px]">ISO:</span> <br/><strong id="lightbox-iso" class="text-white">ISO 100</strong></div>
+                            <div><span class="text-neutral-500 text-[10px]">Focal Length:</span> <br/><strong id="lightbox-focal" class="text-white">50mm</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="palette-color-box" class="hidden space-y-2 bg-neutral-900/60 p-3.5 rounded-xl border border-neutral-800">
+                    <p class="text-xs text-neutral-300 font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-palette text-amber-400"></i> Color Palette Swatches
+                    </p>
+                    <div id="palette-swatches" class="flex items-center gap-1.5 pt-1"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <a href="https://drive.google.com/drive/folders/1JUMBwbK-O4RVowTHknl8jP_YcXVkAA4Y?usp=share_link" target="_blank" class="w-full text-center text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-4 py-2.5 rounded-xl font-medium transition flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-google-drive text-amber-400 text-sm"></i>
+                        <span>เปิด Google Drive ไฟล์ดิบ (RAW Files)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+
+                <div class="pt-3 border-t border-neutral-800/80 flex items-center justify-between">
+                    <span class="text-[11px] text-neutral-500">ศิวา สรรเพชุดา</span>
+                    <button id="lightbox-reupload" class="text-xs bg-neutral-800 hover:bg-neutral-700 text-white px-3 py-1.5 rounded-lg border border-neutral-700 transition">
+                        <i class="fa-solid fa-rotate mr-1"></i> เปลี่ยนรูปภาพ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-neutral-900 border border-neutral-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all transform translate-y-20 opacity-0 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-msg" class="text-xs font-medium">บันทึกรูปภาพเรียบร้อยแล้ว</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-900 bg-black py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-center sm:text-left">
+                <p class="text-xs text-white font-medium">Siwa Sanpechuda — Photography Portfolio</p>
+                <p class="text-[11px] text-neutral-600 mt-1">ออกแบบเพื่อส่งงานถ่ายภาพตามหัวข้อที่กำหนด พร้อมระบบ Crop, ดึง EXIF และตั้งชื่ออัตโนมัติ</p>
+            </div>
+            <div class="text-xs text-neutral-500 flex items-center space-x-4">
+                <span>© 2026 ศิวา สรรเพชุดา</span>
+                <span>•</span>
+                <button onclick="resetAllData()" class="text-neutral-500 hover:text-red-400 transition underline">ล้างข้อมูลภาพทั้งหมด</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const DB_NAME = 'SiwaPortfolioDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'photos';
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = function(e) {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME);
+                    }
+                };
+                request.onsuccess = function(e) {
+                    resolve(e.target.result);
+                };
+                request.onerror = function(e) {
+                    reject(e.target.error);
+                };
+            });
+        }
+
+        async function savePhotoToDB(id, photoObj) {
+            try {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.put(photoObj, id);
+                    req.onsuccess = () => resolve();
+                    req.onerror = (e) => reject(e.target.error);
+                });
+            } catch (err) {
+                console.error("IndexedDB save error:", err);
+            }
+        }
+
+        async function getAllPhotosFromDB() {
+            try {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const result = {};
+                    const req = store.openCursor();
+                    req.onsuccess = function(e) {
+                        const cursor = e.target.result;
+                        if (cursor) {
+                            result[cursor.key] = cursor.value;
+                            cursor.continue();
+                        } else {
+                            resolve(result);
+                        }
+                    };
+                    req.onerror = (e) => reject(e.target.error);
+                });
+            } catch (err) {
+                console.error("IndexedDB read error:", err);
+                return {};
+            }
+        }
+
+        async function removePhotoFromDB(id) {
+            try {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.delete(id);
+                    req.onsuccess = () => resolve();
+                    req.onerror = (e) => reject(e.target.error);
+                });
+            } catch (err) {
+                console.error("IndexedDB delete error:", err);
+            }
+        }
+
+        async function clearDB() {
+            try {
+                const db = await openDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.clear();
+                    req.onsuccess = () => resolve();
+                    req.onerror = (e) => reject(e.target.error);
+                });
+            } catch (err) {
+                console.error("IndexedDB clear error:", err);
+            }
+        }
+
+        const PORTFOLIO_SCHEMA = [
+            {
+                id: 'portrait',
+                title: '1. หมวดภาพถ่ายบุคคล (Portrait)',
+                description: 'ภาพพอร์เทรตในระยะต่างๆ และเทคนิคการเล่นกับแสง shadow & tone',
+                items: [
+                    { id: 'p_cu', code: '1.1', title: 'Portrait Close Up (CU)', nameTag: 'Portrait_CU', desc: 'ภาพถ่ายบุคคลระยะใกล้ เน้นใบหน้า อารมณ์ และแววตา', defaultImg: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_ms', code: '1.2', title: 'Portrait Medium Shot (MS)', nameTag: 'Portrait_MS', desc: 'ภาพถ่ายบุคคลระยะปานกลาง (ครึ่งตัว) แสดงองค์ประกอบตัวบุคคลกับฉาก', defaultImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_ls', code: '1.3', title: 'Portrait Long Shot (LS)', nameTag: 'Portrait_LS', desc: 'ภาพถ่ายบุคคลระยะไกล เห็นเต็มตัวและบริบทบรรยากาศโดยรอบ', defaultImg: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_hk', code: '1.4', title: 'Portrait High Key', nameTag: 'Portrait_HighKey', desc: 'ภาพโทนสว่าง แสงนุ่มนวล เน้นสีขาวหรือโทนสว่างเป็นหลัก', defaultImg: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_lk', code: '1.5', title: 'Portrait Low Key', nameTag: 'Portrait_LowKey', desc: 'ภาพโทนมืด เน้นเงา (Shadow) มิติความลึกลับและอารมณ์ดุดัน', defaultImg: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_elder', code: '1.6', title: 'Portrait คนแก่', nameTag: 'Portrait_Senior', desc: 'ภาพบุคคลผู้สูงอายุ ถ่ายทอดริ้วรอย เรื่องราว และร่องรอยแห่งประสบการณ์', defaultImg: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'p_child', code: '1.7', title: 'Portrait เด็ก', nameTag: 'Portrait_Child', desc: 'ภาพถ่ายเด็ก บันทึกความไร้เดียงสา รอยยิ้ม และความสดใสตามธรรมชาติ', defaultImg: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'nature',
+                title: '2. หมวดธรรมชาติและวัตถุขนาดเล็ก (Nature & Small Subjects)',
+                description: 'เน้นระยะชัดตื้น การคุมฉากหลัง และการถ่ายภาพสิ่งมีชีวิตขนาดเล็ก',
+                items: [
+                    { id: 'n_flower_shallow', code: '1.1', title: 'ภาพชัดตื้นดอกไม้', nameTag: 'Nature_Flower_Shallow', desc: 'ภาพถ่ายดอกไม้เน้นความคมชัดเฉพาะจุด ละลายฉากหลังให้นุ่มนวล', defaultImg: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'n_flower_black', code: '1.2', title: 'ภาพดอกไม้ฉากหลังดำ', nameTag: 'Nature_Flower_BlackBG', desc: 'ภาพดอกไม้ตัดกับฉากหลังสีดำสนิท ขับเน้นรูปทรงและสีสันให้โดดเด่น', defaultImg: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'n_animal_shallow', code: '1.3', title: 'ภาพชัดตื้นสัตว์เล็ก', nameTag: 'Nature_SmallAnimal_Shallow', desc: 'ภาพสัตว์ขนาดเล็ก เช่น แมลง หรือสัตว์เลี้ยง โดยเน้นการโฟกัสชัดตื้น', defaultImg: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'motion',
+                title: '3. หมวดการเคลื่อนไหวและเทคนิคพิเศษ (Motion & Action)',
+                description: 'การควบคุมความเร็วชัตเตอร์ (Shutter Speed) และเทคนิคเฉพาะทาง',
+                items: [
+                    { id: 'm_stop', code: '1.1', title: 'Stop Action', nameTag: 'Motion_StopAction', desc: 'หยุดการเคลื่อนไหวที่รวดเร็วให้อยู่นิ่งด้วย High Shutter Speed', defaultImg: 'https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'm_movement', code: '1.2', title: 'ภาพเคลื่อนไหว (Movement)', nameTag: 'Motion_Movement', desc: 'สร้างเส้นสายการเคลื่อนไหว นุ่มนวล พริ้วไหว', defaultImg: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'm_water', code: '1.3', title: 'ภาพการเคลื่อนไหวของน้ำ', nameTag: 'Motion_WaterFlow', desc: 'ถ่ายภาพน้ำตก น้ำพุ หรือสายน้ำ เผยให้เห็นเส้นสายนุ่มนวลแบบ Silk Flow', defaultImg: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'm_panning', code: '1.4', title: 'เทคนิค Pan กล้อง', nameTag: 'Motion_Panning', desc: 'หมุนกล้องตามวัตถุที่กำลังเคลื่อนที่ เพื่อให้วัตถุชัดแต่ฉากหลังลายเป็นเส้น', defaultImg: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'm_copy_screen', code: '1.5', title: 'Copy หน้าจอคอมพิวเตอร์ / TV', nameTag: 'Motion_ScreenCopy', desc: 'ภาพถ่ายจำลองหรือถ่ายคัดลอกจากหน้าจอแสดงผลดิจิทัล', defaultImg: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'm_copy_old', code: '1.6', title: 'Copy รูปเก่าตอนเด็ก', nameTag: 'Motion_OldPhotoCopy', desc: 'ภาพถ่ายคัดลอกจากรูปถ่ายเก่าในอดีตหรือความทรงจำวัยเด็ก', defaultImg: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'scenery',
+                title: '4. หมวดทิวทัศน์และแสง (Scenery & Atmospheric Light)',
+                description: 'ภาพวิวทิวทัศน์ ธรรมชาติ แสงเงา และบรรยากาศยามค่ำคืน',
+                items: [
+                    { id: 's_landscape', code: '1.1', title: 'Landscape', nameTag: 'Scenery_Landscape', desc: 'ภาพทิวทัศน์ธรรมชาติ ภูเขา ป่าไม้ วิวทิวทัศน์กว้างไกล', defaultImg: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80' },
+                    { id: 's_seascape', code: '1.2', title: 'Seascape', nameTag: 'Scenery_Seascape', desc: 'ภาพทิวทัศน์ชายทะเล ทะเล โขดหิน และท้องฟ้าชายฝั่ง', defaultImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80' },
+                    { id: 's_silhouette', code: '1.3', title: 'Silhouette', nameTag: 'Scenery_Silhouette', desc: 'ภาพเงาดำย้อนแสง ให้วัตถุกลายเป็นรูปทรงย้อนแสงคมชัดบนฉากสว่าง', defaultImg: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=800&q=80' },
+                    { id: 's_night', code: '1.4', title: 'Night Picture', nameTag: 'Scenery_Night', desc: 'ภาพถ่ายทิวทัศน์ยามค่ำคืน แสงไฟเมือง หรือดาวบนท้องฟ้า', defaultImg: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'arch',
+                title: '5. หมวดสถาปัตยกรรม (Architecture)',
+                description: 'เส้นสาย โครงสร้าง และมิติของอาคารและสิ่งก่อสร้าง',
+                items: [
+                    { id: 'a_exterior', code: '1.1', title: 'สถาปัตยกรรมภายนอก', nameTag: 'Arch_Exterior', desc: 'รูปทรง เส้นสาย และโครงสร้างของอาคารมองจากภายนอก', defaultImg: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'a_interior', code: '1.2', title: 'สถาปัตยกรรมภายใน', nameTag: 'Arch_Interior', desc: 'การจัดวางพื้นที่ แสง และบรรยากาศภายในอาคาร (Interior)', defaultImg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'a_detail', code: '1.3', title: 'สถาปัตยกรรมเน้น Detail', nameTag: 'Arch_Detail', desc: 'เจาะลึกรายละเอียด ลวดลาย หรือ Texture เฉพาะส่วนของสถาปัตยกรรม', defaultImg: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'culture',
+                title: '6. หมวด Candid & วิถีชีวิตวัฒนธรรม',
+                description: 'จังหวะเผลออันธรรมชาติและเอกลักษณ์ทางประเพณี',
+                items: [
+                    { id: 'c_candid', code: '1.0', title: 'Candid (วิถีชีวิตธรรมชาติ)', nameTag: 'Culture_Candid', desc: 'บันทึกภาพทีพลั้งเผลอตามธรรมชาติของคนและวิถีชีวิตประจำวัน', defaultImg: 'https://images.unsplash.com/photo-1477281736936-c3408d3879ed?auto=format&fit=crop&w=800&q=80' },
+                    { id: 'c_tradition', code: '2.0', title: 'ภาพประเพณี', nameTag: 'Culture_Tradition', desc: 'บันทึกบรรยากาศ พิธีกรรม หรือความงดงามของประเพณีท้องถิ่น', defaultImg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'creative',
+                title: '7. หมวดแนวคิดสร้างสรรค์ (Creative Concept)',
+                description: 'ภาพถ่ายสะท้อนมุมมอง ไอเดีย และจิตตินัยของผู้ถ่าย',
+                items: [
+                    { id: 'cr_concept', code: '1.0', title: 'แนวคิดสร้างสรรค์อิสระ', nameTag: 'Creative_Concept', desc: 'ถ่ายทอดความคิดสร้างสรรค์ เทคนิคพิเศษ หรือมุมมองเฉพาะตัวตามชื่นชอบ', defaultImg: 'https://images.unsplash.com/photo-1500462875556-3897d838eb04?auto=format&fit=crop&w=800&q=80' }
+                ]
+            },
+            {
+                id: 'palette',
+                title: '8. หมวด Color Palette (พาเลทสีจากภาพถ่าย)',
+                description: 'ชุดภาพถ่ายพร้อมสกัดโทนสีหลัก (Palette Color Extraction) จำนวน 2 ภาพ',
+                isPaletteCategory: true,
+                items: [
+                    { id: 'pal_1', code: '1.1', title: 'Color Palette จากภาพถ่าย #1', nameTag: 'Palette_Shot_01', desc: 'ภาพถ่ายพร้อมแถบสกัดโทนชุดสี 5 สีหลักจากภาพถ่าย', defaultImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80', colors: ['#1A2E3B', '#3E6278', '#88A3B2', '#D3C29A', '#8C6C43'] },
+                    { id: 'pal_2', code: '1.2', title: 'Color Palette จากภาพถ่าย #2', nameTag: 'Palette_Shot_02', desc: 'ภาพถ่ายพร้อมแถบสกัดโทนชุดสี 5 สีหลักจากภาพถ่าย', defaultImg: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', colors: ['#0B0B0C', '#3A1519', '#8C1F28', '#D93848', '#F2A0A7'] }
+                ]
+            }
+        ];
+
+        let userPhotos = {};
+        let cropperInstance = null;
+        let pendingUploadData = null;
+
+        async function initApp() {
+            userPhotos = await getAllPhotosFromDB();
+            
+            if (userPhotos['profile_avatar']) {
+                setProfileAvatars(userPhotos['profile_avatar'].url);
+            }
+
+            renderGallery();
+            updateStats();
+        }
+
+        function setProfileAvatars(url) {
+            const headerAvatar = document.getElementById('header-avatar');
+            const heroAvatar = document.getElementById('hero-avatar');
+            if (headerAvatar) headerAvatar.src = url;
+            if (heroAvatar) heroAvatar.src = url;
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('gallery-container');
+            if (!container) return;
+
+            container.innerHTML = PORTFOLIO_SCHEMA.map(cat => {
+                return `
+                    <section class="category-section" data-category="${cat.id}">
+                        <div class="mb-8 border-b border-neutral-800/80 pb-4">
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">${cat.title}</h2>
+                            <p class="text-sm sm:text-base text-apple-textMuted mt-1.5 leading-relaxed">${cat.description}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                            ${cat.items.map(item => renderPhotoCard(item, cat)).join('')}
+                        </div>
+                    </section>
+                `;
+            }).join('');
+        }
+
+        // Helper to format EXIF without redundant prefixes (e.g., prevent "f/f/2.8" or "ISO ISO 100")
+        function formatExifValues(rawExif) {
+            if (!rawExif) {
+                return {
+                    camera: 'Camera Model',
+                    aperture: 'f/2.8',
+                    shutter: '1/250s',
+                    iso: 'ISO 100',
+                    focal: '50mm'
+                };
+            }
+
+            let aperture = rawExif.aperture || 'f/2.8';
+            if (aperture && !aperture.toString().toLowerCase().startsWith('f/')) {
+                aperture = `f/${aperture}`;
+            }
+
+            let shutter = rawExif.shutter || '1/250s';
+            if (shutter && !shutter.toString().endsWith('s')) {
+                shutter = `${shutter}s`;
+            }
+
+            let iso = rawExif.iso || '100';
+            if (iso && !iso.toString().toUpperCase().startsWith('ISO')) {
+                iso = `ISO ${iso}`;
+            }
+
+            let focal = rawExif.focal || '50mm';
+            if (focal && !focal.toString().toLowerCase().endsWith('mm')) {
+                focal = `${focal}mm`;
+            }
+
+            return {
+                camera: rawExif.camera || 'Camera Model',
+                aperture: aperture,
+                shutter: shutter,
+                iso: iso,
+                focal: focal
+            };
+        }
+
+        function renderPhotoCard(item, cat) {
+            const photoData = userPhotos[item.id];
+            const hasUserUploaded = !!photoData;
+            const imgSrc = photoData ? photoData.url : item.defaultImg;
+
+            const autoFileName = photoData && photoData.fileName 
+                ? photoData.fileName 
+                : `Siwa_${item.nameTag || 'Photo'}.jpg`;
+
+            const exif = formatExifValues(photoData ? photoData.exif : null);
+            const colors = photoData && photoData.colors ? photoData.colors : item.colors;
+
+            return `
+                <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group relative border border-neutral-800/80">
+                    <div class="relative bg-neutral-950 aspect-[4/3] overflow-hidden cursor-pointer" onclick="openLightbox('${item.id}')">
+                        <img src="${imgSrc}" alt="${item.title}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40 opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                        
+                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span class="bg-black/70 backdrop-blur-md text-xs text-white font-mono font-bold px-2.5 py-0.5 rounded-full border border-white/10">
+                                ${item.code}
+                            </span>
+                            ${hasUserUploaded ? `
+                                <span class="bg-emerald-500/90 text-black text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
+                                    <i class="fa-solid fa-check mr-0.5"></i> อัปโหลดแล้ว
+                                </span>
+                            ` : `
+                                <span class="bg-neutral-800/80 text-neutral-300 text-[10px] font-medium px-2.5 py-0.5 rounded-full border border-neutral-700">
+                                    ตัวอย่าง
+                                </span>
+                            `}
+                        </div>
+
+                        <div class="absolute bottom-3 left-3 right-3 text-left">
+                            <span class="text-[10px] text-amber-400 font-mono font-semibold tracking-wider block mb-0.5">AUTO FILENAME</span>
+                            <span class="text-xs font-mono font-bold text-amber-200 bg-amber-950/70 backdrop-blur-md px-2.5 py-1 rounded border border-amber-800/60 truncate block">
+                                ${autoFileName}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white group-hover:text-amber-300 transition-colors">${item.title}</h3>
+                            <p class="text-xs sm:text-sm text-neutral-400 mt-1.5 leading-relaxed line-clamp-2">${item.desc}</p>
+                        </div>
+
+                        <!-- EXIF Info Mini Bar -->
+                        <div class="bg-neutral-900/90 border border-neutral-800 rounded-xl p-3 text-xs font-mono text-neutral-200 grid grid-cols-2 gap-1.5">
+                            <div class="col-span-2 text-neutral-300 border-b border-neutral-800/80 pb-1.5 flex justify-between font-semibold">
+                                <span><i class="fa-solid fa-camera mr-1 text-amber-400"></i> ${exif.camera}</span>
+                            </div>
+                            <div><span class="text-neutral-500">Aperture:</span> ${exif.aperture}</div>
+                            <div><span class="text-neutral-500">Shutter:</span> ${exif.shutter}</div>
+                            <div><span class="text-neutral-500">ISO:</span> ${exif.iso}</div>
+                            <div><span class="text-neutral-500">Focal:</span> ${exif.focal}</div>
+                        </div>
+
+                        ${cat.isPaletteCategory && colors ? `
+                            <div class="space-y-1.5 pt-1">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-neutral-300 font-medium"><i class="fa-solid fa-palette text-amber-400"></i> Palette Colors</span>
+                                    <button onclick="extractPaletteForId('${item.id}')" class="text-xs text-amber-300 hover:underline font-medium">สกัดสีใหม่</button>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    ${colors.map(hex => `
+                                        <div class="flex-1 h-6 rounded flex items-center justify-center text-[9px] font-mono text-white/90 border border-white/10" style="background-color: ${hex}" title="${hex}">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex items-center gap-2 pt-2 border-t border-neutral-800/60">
+                            <label class="flex-1 text-center text-xs sm:text-sm bg-neutral-800 hover:bg-neutral-700 text-white py-2.5 rounded-xl border border-neutral-700 transition cursor-pointer font-semibold flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-crop-simple text-amber-400"></i>
+                                <span>${hasUserUploaded ? 'Crop & อัปโหลดใหม่' : 'Crop & อัปโหลดภาพ'}</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="uploadSinglePhoto(event, '${item.id}')">
+                            </label>
+                            ${hasUserUploaded ? `
+                                <button onclick="removePhoto('${item.id}')" class="text-xs bg-red-950/40 hover:bg-red-900/60 text-red-300 p-2.5 rounded-xl border border-red-800/50 transition" title="ลบรูป">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function uploadSinglePhoto(event, itemId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const itemDef = findItemDefinition(itemId);
+            const autoFileName = `Siwa_${itemDef ? itemDef.nameTag : 'Photo'}_${file.name}`;
+
+            let rawExif = {
+                camera: 'Standard Camera',
+                aperture: '2.8',
+                shutter: '1/125',
+                iso: '200',
+                focal: '35'
+            };
+
+            try {
+                const tags = await ExifReader.load(file);
+                if (tags) {
+                    if (tags.Model) rawExif.camera = tags.Model.description;
+                    if (tags.FNumber) rawExif.aperture = tags.FNumber.description;
+                    if (tags.ExposureTime) rawExif.shutter = tags.ExposureTime.description;
+                    if (tags.ISOSpeedRatings) rawExif.iso = tags.ISOSpeedRatings.description;
+                    if (tags.FocalLength) rawExif.focal = tags.FocalLength.description;
+                }
+            } catch (err) {
+                console.log("EXIF parsing note:", err);
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const rawDataUrl = e.target.result;
+                
+                pendingUploadData = {
+                    itemId: itemId,
+                    autoFileName: autoFileName,
+                    exifData: rawExif,
+                    itemDef: itemDef,
+                    rawDataUrl: rawDataUrl
+                };
+
+                openCropperModal(rawDataUrl);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openCropperModal(imgSrc) {
+            const modal = document.getElementById('cropper-modal');
+            const cropperImg = document.getElementById('cropper-img');
+            
+            cropperImg.src = imgSrc;
+            modal.classList.remove('hidden');
+
+            if (cropperInstance) {
+                cropperInstance.destroy();
+            }
+
+            cropperInstance = new Cropper(cropperImg, {
+                aspectRatio: NaN,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 0.9,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false,
+            });
+        }
+
+        function setCropRatio(ratio) {
+            if (cropperInstance) {
+                cropperInstance.setAspectRatio(ratio);
+            }
+        }
+
+        function rotateCrop(degree) {
+            if (cropperInstance) {
+                cropperInstance.rotate(degree);
+            }
+        }
+
+        function zoomCrop(delta) {
+            if (cropperInstance) {
+                cropperInstance.zoom(delta);
+            }
+        }
+
+        function closeCropperModal() {
+            document.getElementById('cropper-modal').classList.add('hidden');
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            pendingUploadData = null;
+        }
+
+        async function confirmCropAndSave() {
+            if (!cropperInstance || !pendingUploadData) return;
+
+            const croppedCanvas = cropperInstance.getCroppedCanvas({
+                maxWidth: 2400,
+                maxHeight: 2400,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+
+            if (!croppedCanvas) {
+                showToast("เกิดข้อผิดพลาดในการ Crop รูปภาพ");
+                return;
+            }
+
+            const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.92);
+            const { itemId, autoFileName, exifData, itemDef } = pendingUploadData;
+
+            const photoObj = {
+                url: croppedDataUrl,
+                fileName: autoFileName,
+                exif: exifData
+            };
+
+            closeCropperModal();
+
+            if (itemDef && itemDef.isPalette) {
+                extractColorsFromImage(croppedDataUrl, async (colors) => {
+                    photoObj.colors = colors;
+                    userPhotos[itemId] = photoObj;
+                    await savePhotoToDB(itemId, photoObj);
+                    renderGallery();
+                    updateStats();
+                    showToast(`Crop & อัปโหลดพร้อมสกัด Palette เรียบร้อยแล้ว`);
+                });
+            } else {
+                userPhotos[itemId] = photoObj;
+                await savePhotoToDB(itemId, photoObj);
+                renderGallery();
+                updateStats();
+                showToast(`Crop & บันทึกภาพสำหรับ ${itemDef ? itemDef.title : itemId} เรียบร้อยแล้ว`);
+            }
+        }
+
+        async function uploadProfilePicture(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pendingUploadData = {
+                    isProfile: true,
+                    rawDataUrl: e.target.result
+                };
+                openCropperModal(e.target.result);
+                setCropRatio(1);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        const originalConfirmCropAndSave = confirmCropAndSave;
+        confirmCropAndSave = async function() {
+            if (pendingUploadData && pendingUploadData.isProfile) {
+                if (!cropperInstance) return;
+                const croppedCanvas = cropperInstance.getCroppedCanvas({
+                    width: 500,
+                    height: 500,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
+                setProfileAvatars(croppedDataUrl);
+                
+                const profileObj = { url: croppedDataUrl };
+                userPhotos['profile_avatar'] = profileObj;
+                await savePhotoToDB('profile_avatar', profileObj);
+                closeCropperModal();
+                showToast("อัปเดตและ Crop รูปโปรไฟล์เรียบร้อยแล้ว");
+                return;
+            }
+            await originalConfirmCropAndSave();
+        };
+
+        async function extractPaletteForId(itemId) {
+            const photoData = userPhotos[itemId];
+            const itemDef = findItemDefinition(itemId);
+            const imgSrc = photoData ? photoData.url : itemDef.defaultImg;
+
+            extractColorsFromImage(imgSrc, async (colors) => {
+                if (!userPhotos[itemId]) userPhotos[itemId] = { url: imgSrc };
+                userPhotos[itemId].colors = colors;
+                await savePhotoToDB(itemId, userPhotos[itemId]);
+                renderGallery();
+                showToast("สกัดชุดสีพาเลทเรียบร้อยแล้ว");
+            });
+        }
+
+        function extractColorsFromImage(imgSrc, callback) {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 100;
+                canvas.height = 100;
+                ctx.drawImage(img, 0, 0, 100, 100);
+
+                const imgData = ctx.getImageData(0, 0, 100, 100).data;
+                const colorMap = {};
+
+                for (let i = 0; i < imgData.length; i += 16) {
+                    const r = imgData[i];
+                    const g = imgData[i+1];
+                    const b = imgData[i+2];
+                    
+                    const qr = Math.round(r / 32) * 32;
+                    const qg = Math.round(g / 32) * 32;
+                    const qb = Math.round(b / 32) * 32;
+
+                    const hex = "#" + ((1 << 24) + (qr << 16) + (qg << 8) + qb).toString(16).slice(1);
+                    colorMap[hex] = (colorMap[hex] || 0) + 1;
+                }
+
+                const sortedHex = Object.keys(colorMap).sort((a,b) => colorMap[b] - colorMap[a]);
+                const palette = sortedHex.slice(0, 5);
+                
+                while(palette.length < 5) {
+                    palette.push("#121212");
+                }
+
+                callback(palette);
+            };
+            img.onerror = function() {
+                callback(['#111111', '#333333', '#666666', '#999999', '#cccccc']);
+            }
+            img.src = imgSrc;
+        }
+
+        async function removePhoto(itemId) {
+            if (userPhotos[itemId]) {
+                delete userPhotos[itemId];
+                await removePhotoFromDB(itemId);
+                renderGallery();
+                updateStats();
+                showToast("ลบรูปภาพและคืนค่าตัวอย่าง");
+            }
+        }
+
+        function triggerGlobalUpload() {
+            document.getElementById('master-file-input').click();
+        }
+
+        function handleMasterUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const allItems = [];
+            PORTFOLIO_SCHEMA.forEach(c => c.items.forEach(i => allItems.push(i.id)));
+
+            let fileIndex = 0;
+            allItems.forEach(id => {
+                if (!userPhotos[id] && fileIndex < files.length) {
+                    const file = files[fileIndex];
+                    fileIndex++;
+                    uploadSinglePhoto({ target: { files: [file] } }, id);
+                }
+            });
+        }
+
+        function updateStats() {
+            let total = 0;
+            let uploaded = 0;
+
+            PORTFOLIO_SCHEMA.forEach(cat => {
+                cat.items.forEach(item => {
+                    total++;
+                    if (userPhotos[item.id]) uploaded++;
+                });
+            });
+
+            const upCountEl = document.getElementById('uploaded-count');
+            const totCountEl = document.getElementById('total-count');
+            if (upCountEl) upCountEl.innerText = uploaded;
+            if (totCountEl) totCountEl.innerText = total;
+        }
+
+        function filterCategory(catId) {
+            document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-neutral-800', 'text-white', 'bg-white', 'text-black');
+                btn.classList.add('text-apple-textMuted', 'bg-neutral-900', 'text-neutral-400');
+            });
+
+            const sections = document.querySelectorAll('.category-section');
+            sections.forEach(sec => {
+                if (catId === 'all' || sec.getAttribute('data-category') === catId) {
+                    sec.style.display = 'block';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        }
+
+        function findItemDefinition(itemId) {
+            for (let cat of PORTFOLIO_SCHEMA) {
+                for (let item of cat.items) {
+                    if (item.id === itemId) return { ...item, categoryTitle: cat.title, isPalette: cat.isPaletteCategory };
+                }
+            }
+            return null;
+        }
+
+        function openLightbox(itemId) {
+            const itemDef = findItemDefinition(itemId);
+            if (!itemDef) return;
+
+            const photoData = userPhotos[itemId];
+            const imgSrc = photoData ? photoData.url : itemDef.defaultImg;
+            const autoFileName = photoData && photoData.fileName 
+                ? photoData.fileName 
+                : `Siwa_${itemDef.nameTag || 'Photo'}.jpg`;
+
+            const exif = formatExifValues(photoData ? photoData.exif : null);
+
+            document.getElementById('lightbox-img').src = imgSrc;
+            document.getElementById('lightbox-filename').innerText = autoFileName;
+            document.getElementById('lightbox-title').innerText = `${itemDef.code} ${itemDef.title}`;
+            document.getElementById('lightbox-category').innerText = itemDef.categoryTitle;
+            document.getElementById('lightbox-desc').innerText = itemDef.desc;
+
+            document.getElementById('lightbox-camera').innerText = exif.camera;
+            document.getElementById('lightbox-aperture').innerText = exif.aperture;
+            document.getElementById('lightbox-shutter').innerText = exif.shutter;
+            document.getElementById('lightbox-iso').innerText = exif.iso;
+            document.getElementById('lightbox-focal').innerText = exif.focal;
+
+            const paletteBox = document.getElementById('palette-color-box');
+            const paletteSwatches = document.getElementById('palette-swatches');
+            
+            const colors = photoData && photoData.colors ? photoData.colors : itemDef.colors;
+            if (colors) {
+                paletteBox.classList.remove('hidden');
+                paletteSwatches.innerHTML = colors.map(hex => `
+                    <div class="flex-1 h-8 rounded-md flex items-center justify-center text-[10px] font-mono text-white/80 shadow border border-white/10 cursor-pointer" style="background-color: ${hex}" title="${hex}" onclick="copyHex('${hex}')">
+                        ${hex}
+                    </div>
+                `).join('');
+            } else {
+                paletteBox.classList.add('hidden');
+            }
+
+            const reuploadBtn = document.getElementById('lightbox-reupload');
+            reuploadBtn.onclick = function() {
+                closeLightbox();
+                const input = document.querySelector(`input[onchange*="${itemId}"]`);
+                if (input) input.click();
+            };
+
+            document.getElementById('lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function copyHex(hex) {
+            const temp = document.createElement('textarea');
+            temp.value = hex;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast(`คัดลอกรหัสสี ${hex} แล้ว`);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        async function resetAllData() {
+            if (confirm('คุณต้องการลบข้อมูลการอัปโหลดรูปภาพทั้งหมดใช่หรือไม่? (ระบบจะดึงภาพตัวอย่างกลับมา)')) {
+                await clearDB();
+                userPhotos = {};
+                renderGallery();
+                updateStats();
+                showToast("ล้างข้อมูลภาพถ่ายทั้งหมดแล้ว");
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                closeCropperModal();
+            }
+        });
+
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
