@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- ExifReader JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/exifreader@4.20.0/dist/exif-reader.min.js"></script>
+    <!-- JSZip (export photos for publishing) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <!-- Cropper.js Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -149,6 +151,10 @@
                     <div class="hidden xl:flex items-center text-xs text-apple-textMuted bg-neutral-900 px-3.5 py-2 rounded-full border border-neutral-800 font-mono">
                         <span id="uploaded-count" class="text-white font-bold mr-1">0</span> / <span id="total-count">21</span> รูปถ่าย
                     </div>
+                    <button onclick="exportForPublish()" class="text-xs sm:text-sm bg-emerald-500 hover:bg-emerald-400 text-black font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all flex items-center space-x-1.5 shadow-sm" title="ดาวน์โหลดรูปและ photos.json เพื่อนำไปวางใน GitHub">
+                        <i class="fa-solid fa-file-zipper text-xs"></i>
+                        <span class="hidden sm:inline">ส่งออกเพื่อเผยแพร่</span>
+                    </button>
                     <button onclick="triggerGlobalUpload()" class="text-xs sm:text-sm bg-white text-black hover:bg-neutral-200 font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all flex items-center space-x-1.5 shadow-sm">
                         <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
                         <span class="hidden sm:inline">อัปโหลดด่วน</span>
@@ -538,15 +544,24 @@
         ];
 
         let userPhotos = {};
+        let publishedPhotos = {};
+        function getPhoto(id) { return userPhotos[id] || publishedPhotos[id]; }
         let cropperInstance = null;
         let pendingUploadData = null;
 
         async function initApp() {
             userPhotos = await getAllPhotosFromDB();
-            
-            if (userPhotos['profile_avatar']) {
-                setProfileAvatars(userPhotos['profile_avatar'].url);
+
+            // Load published photos (photos.json + images/ folder deployed with the site)
+            try {
+                const res = await fetch('photos.json', { cache: 'no-cache' });
+                if (res.ok) publishedPhotos = await res.json();
+            } catch (err) {
+                console.log('No photos.json found', err);
             }
+
+            const avatar = getPhoto('profile_avatar');
+            if (avatar) setProfileAvatars(avatar.url);
 
             renderGallery();
             updateStats();
@@ -620,7 +635,7 @@
         }
 
         function renderPhotoCard(item, cat) {
-            const photoData = userPhotos[item.id];
+            const photoData = getPhoto(item.id);
             const hasUserUploaded = !!photoData;
             const imgSrc = photoData ? photoData.url : item.defaultImg;
 
@@ -891,12 +906,12 @@
         };
 
         async function extractPaletteForId(itemId) {
-            const photoData = userPhotos[itemId];
+            const photoData = getPhoto(itemId);
             const itemDef = findItemDefinition(itemId);
             const imgSrc = photoData ? photoData.url : itemDef.defaultImg;
 
             extractColorsFromImage(imgSrc, async (colors) => {
-                if (!userPhotos[itemId]) userPhotos[itemId] = { url: imgSrc };
+                if (!userPhotos[itemId]) userPhotos[itemId] = { ...(photoData || {}), url: imgSrc };
                 userPhotos[itemId].colors = colors;
                 await savePhotoToDB(itemId, userPhotos[itemId]);
                 renderGallery();
@@ -983,7 +998,7 @@
             PORTFOLIO_SCHEMA.forEach(cat => {
                 cat.items.forEach(item => {
                     total++;
-                    if (userPhotos[item.id]) uploaded++;
+                    if (getPhoto(item.id)) uploaded++;
                 });
             });
 
@@ -1022,7 +1037,7 @@
             const itemDef = findItemDefinition(itemId);
             if (!itemDef) return;
 
-            const photoData = userPhotos[itemId];
+            const photoData = getPhoto(itemId);
             const imgSrc = photoData ? photoData.url : itemDef.defaultImg;
             const autoFileName = photoData && photoData.fileName 
                 ? photoData.fileName 
@@ -1101,6 +1116,45 @@
                 updateStats();
                 showToast("ล้างข้อมูลภาพถ่ายทั้งหมดแล้ว");
             }
+        }
+
+        async function exportForPublish() {
+            if (typeof JSZip === 'undefined') {
+                showToast('โหลด JSZip ไม่สำเร็จ ลองรีเฟรชหน้าแล้วลองใหม่');
+                return;
+            }
+            const ids = Object.keys(userPhotos).filter(id => userPhotos[id] && userPhotos[id].url && userPhotos[id].url.startsWith('data:'));
+            if (ids.length === 0) {
+                showToast('ยังไม่มีรูปที่อัปโหลดในเบราว์เซอร์นี้');
+                return;
+            }
+
+            const zip = new JSZip();
+            const manifest = {};
+            // Keep entries already published so exporting a few photos doesn't remove the rest
+            Object.keys(publishedPhotos).forEach(id => { manifest[id] = publishedPhotos[id]; });
+
+            for (const id of ids) {
+                const p = userPhotos[id];
+                const blob = await (await fetch(p.url)).blob();
+                const path = 'images/' + id + '.jpg';
+                zip.file(path, blob);
+                manifest[id] = { url: path };
+                if (p.fileName) manifest[id].fileName = p.fileName;
+                if (p.exif) manifest[id].exif = p.exif;
+                if (p.colors) manifest[id].colors = p.colors;
+            }
+            zip.file('photos.json', JSON.stringify(manifest, null, 2));
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = 'portfolio-publish.zip';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            showToast('ส่งออก ' + ids.length + ' รูปเรียบร้อย แตกไฟล์ zip แล้วนำไปวางใน GitHub');
         }
 
         window.addEventListener('keydown', (e) => {
