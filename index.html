@@ -566,6 +566,23 @@
                 if (pp && typeof pp.url === 'string') pp.url = pp.url.split('/').pop();
             });
 
+            // Auto-discover images uploaded to the repo without being listed in photos.json
+            // (file name = item id, e.g. m_copy_old.jpg)
+            const probe = (url) => new Promise(resolve => {
+                const im = new Image();
+                im.onload = () => resolve(true);
+                im.onerror = () => resolve(false);
+                im.src = url;
+            });
+            const allIds = ['profile_avatar'];
+            PORTFOLIO_SCHEMA.forEach(cat => cat.items.forEach(it => allIds.push(it.id)));
+            await Promise.all(allIds.filter(id => !publishedPhotos[id]).map(async id => {
+                for (const ext of ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG']) {
+                    const url = id + '.' + ext;
+                    if (await probe(url)) { publishedPhotos[id] = { url }; return; }
+                }
+            }));
+
             const avatar = getPhoto('profile_avatar');
             if (avatar) setProfileAvatars(avatar.url);
 
